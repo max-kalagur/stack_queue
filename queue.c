@@ -40,6 +40,7 @@ void enqueue( int newVal, queueStruct * queue ) {
         queue->head = (listNode *) malloc(sizeof(listNode));
         if (queue->head == NULL) {
             printf("out of memory error\n");
+            return;
         }
         queue->head = newNode;
     }
@@ -48,6 +49,7 @@ void enqueue( int newVal, queueStruct * queue ) {
         queue->tail = (listNode *) malloc(sizeof(listNode));
         if (queue->tail == NULL) {
             printf("out of memory error\n");
+            return;
         }
     }
     queue->tail->nextNode = newNode;

@@ -39,6 +39,7 @@ void push( int newVal, stackStruct * stack ) {
         stack->top = (listNode *) malloc(sizeof(listNode));
         if (stack->top == NULL) {
             printf("out of memory error\n");
+            return;
         }
     }
     stack->top = newNode;
