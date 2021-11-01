@@ -3,176 +3,120 @@
 #include <string.h>
 
 typedef struct {
-    int val;             // 4 bites
-    void * prevNode;     // 8 bites
+    int val;         
+    void * prevNode; 
 } listNode;
 
-listNode * top = NULL;
-int size = 0;
-
-listNode * createNode( int newVal );
-void put( int newVal );
-int pop();
-void freeNode(listNode * top);
-void printList(listNode* tmpTop);
+typedef struct {
+    listNode * top;
+} stackStruct;
 
 
-void stackInit() {
+stackStruct * stackInit();
+void put( int newVal, stackStruct * stack );
+int pop(stackStruct * stack);
+listNode * createStackNode( int newVal, stackStruct * stack );
+void freeNode(listNode * node);
 
-    top = (listNode *) malloc(sizeof(listNode));
-    
-    if (top == NULL) {
+
+stackStruct * stackInit() {
+
+    stackStruct * stack;
+
+    stack = (stackStruct *) malloc(sizeof(stackStruct));
+    if (stack == NULL) {
         printf("out of memory error\n");
-		exit(1);
+        return NULL;
     }
+
+    return stack;
 }
 
-void push( int newVal ) {
+void push( int newVal, stackStruct * stack ) {
 	
-    listNode * newNode = createNode(newVal);
-    if( size == 0 ) {
-        stackInit();
+    listNode * newNode = createStackNode(newVal, stack);
+    if (stack->top == NULL) {
+        stack->top = (listNode *) malloc(sizeof(listNode));
+        if (stack->top == NULL) {
+            printf("out of memory error\n");
+        }
     }
-    top = newNode;
-    size++;
+    stack->top = newNode;
 }
 
 
-int pop() {
+int pop(stackStruct * stack) {
 
-    int valTmp = top->val;                 // tmp var
-    listNode * prevNode = top->prevNode;   // tmp var
+    int valTmp = stack->top->val;                 // tmp var
+    listNode * prevNode = stack->top->prevNode;   // tmp var
 
-    freeNode(top);                         // free memory of current top
-    top = prevNode;                        // move top backward
-    size--;                                // decrease stack size
+    freeNode(stack->top);                         // free memory of current top
+    stack->top = prevNode;                        // move top backward
 
-    if (top == NULL) {
+    if (stack->top == NULL) {
         printf("Stack is empty, bye bye\n");
-		exit(1);
+		return -1;
     }
 
     return valTmp;
 }
 
-listNode * createNode( int newVal ) {
+listNode * createStackNode( int newVal, stackStruct * stack ) {
     listNode * newNode = (listNode *) malloc (sizeof(listNode));
 
 	if (newNode == NULL) {
 		printf("out of memory error\n");
-		exit(1);
+        return NULL;
 	}
 
 	newNode->val = newVal;
-    if( top != NULL ) {
-        newNode->prevNode = top;
-    }
-    else {
-        newNode->prevNode = NULL;
-    }
+    newNode->prevNode = stack->top;
 
 	return newNode;
 }
 
 
-void freeNode(listNode * top) {
-
-	free(top);
-	top = NULL;
+void freeNode(listNode * node) {
+	free(node);
+	node = NULL;
 }
 
-void printList(listNode* tmpTop) {
-	while(tmpTop != NULL) {
-        printf("%d\n", tmpTop->val);
-		tmpTop = tmpTop->prevNode;
-	}
-    printf("-------------------------------\n");
-}
 
 int main() {
 
-    push(4);
-    printList(top);
-
-    push(5);
-    printList(top);
-
-    push(-2);
-    printList(top);
-
-    push(0);
-    printList(top);
-
-    pop();
-    printList(top);
-
-    push(99);
-    printList(top);
-
-    pop();
-    printList(top);
-
-    pop();
-    printList(top);
-
-    push(33);
-    printList(top);
-
-    pop();
-    printList(top);
-
-    pop();
-    printList(top);
-
-    pop();
-    printList(top);
-
-    pop();
-    printList(top);
-
 /*
-Output:
+    //Example of use:
+    stackStruct * stack;
+    stack = stackInit();
 
-4
--------------------------------
-5
-4
--------------------------------
--2
-5
-4
--------------------------------
-0
--2
-5
-4
--------------------------------
--2
-5
-4
--------------------------------
-99
--2
-5
-4
--------------------------------
--2
-5
-4
--------------------------------
-5
-4
--------------------------------
-33
-5
-4
--------------------------------
-5
-4
--------------------------------
-4
--------------------------------
-Stack is empty, bye bye
+    push(4, stack);         printf("push(4, stack);     // top - %d\n", stack->top->val);
+    push(5, stack);         printf("push(5, stack);     // top - %d\n", stack->top->val);
+    push(-2, stack);        printf("push(-2, stack);    // top - %d\n", stack->top->val);
+    push(0, stack);         printf("push(0, stack);     // top - %d\n", stack->top->val);
+    pop(stack);             printf("pop(stack);         // top - %d\n", stack->top->val);
+    push(99, stack);        printf("push(99, stack);    // top - %d\n", stack->top->val);
+    pop(stack);             printf("pop(stack);         // top - %d\n", stack->top->val);
+    pop(stack);             printf("pop(stack);         // top - %d\n", stack->top->val);
+    push(33, stack);        printf("push(33, stack);    // top - %d\n", stack->top->val);
+    pop(stack);             printf("pop(stack);         // top - %d\n", stack->top->val);
+    pop(stack);             printf("pop(stack);         // top - %d\n", stack->top->val);
+    pop(stack);             
+*/
+/*
+    Output:
+
+    push(4, stack);     // top - 4
+    push(5, stack);     // top - 5
+    push(-2, stack);    // top - -2
+    push(0, stack);     // top - 0
+    pop(stack);         // top - -2
+    push(99, stack);    // top - 99
+    pop(stack);         // top - -2
+    pop(stack);         // top - 5
+    push(33, stack);    // top - 33
+    pop(stack);         // top - 5
+    pop(stack);         // top - 4
+    Stack is empty, bye bye
 */
 
     return 0;

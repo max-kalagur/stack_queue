@@ -16,7 +16,7 @@ queueStruct * queueInit();
 void enqueue( int newVal, queueStruct * queue );
 int dequeue( queueStruct * queue );
 listNode * createQueueNode( int newVal );
-void freeQueueNode(listNode * head);
+void freeQueueNode(listNode * node);
 
 
 queueStruct * queueInit() {
