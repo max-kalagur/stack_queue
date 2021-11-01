@@ -89,7 +89,9 @@ void freeQueueNode(listNode * node) {
 
 int main() {
 
-    /* Example of use: */
+/* 
+    //Example of use: 
+
     queueStruct * queue;
     queue = queueInit();
 
@@ -105,22 +107,22 @@ int main() {
     dequeue(queue);         printf("dequeue(queue);     // head - %d, tail - %d\n", queue->head->val, queue->tail->val);
     dequeue(queue);         printf("dequeue(queue);     // head - %d, tail - %d\n", queue->head->val, queue->tail->val);
     dequeue(queue);         
-
+*/
 /*
-Output:
+    Output:
 
-enqueue(4, queue);  // head - 4, tail - 4
-enqueue(5, queue);  // head - 4, tail - 5
-enqueue(-2, queue); // head - 4, tail - -2
-enqueue(0, queue);  // head - 4, tail - 0
-dequeue(queue);     // head - 5, tail - 0
-enqueue(99, queue); // head - 5, tail - 99
-dequeue(queue);     // head - -2, tail - 99
-dequeue(queue);     // head - 0, tail - 99
-enqueue(33, queue); // head - 0, tail - 33
-dequeue(queue);     // head - 99, tail - 33
-dequeue(queue);     // head - 33, tail - 33
-Queue is empty, bye bye
+    enqueue(4, queue);  // head - 4, tail - 4
+    enqueue(5, queue);  // head - 4, tail - 5
+    enqueue(-2, queue); // head - 4, tail - -2
+    enqueue(0, queue);  // head - 4, tail - 0
+    dequeue(queue);     // head - 5, tail - 0
+    enqueue(99, queue); // head - 5, tail - 99
+    dequeue(queue);     // head - -2, tail - 99
+    dequeue(queue);     // head - 0, tail - 99
+    enqueue(33, queue); // head - 0, tail - 33
+    dequeue(queue);     // head - 99, tail - 33
+    dequeue(queue);     // head - 33, tail - 33
+    Queue is empty, bye bye
 */
 
     return 0;
