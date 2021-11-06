@@ -5,18 +5,18 @@
 typedef struct {
     int val;
     void * nextNode;
-} listNode;
+} queueNode;
 
 typedef struct {
-    listNode * head;
-    listNode * tail;
+    queueNode * head;
+    queueNode * tail;
 } queueStruct;
 
 queueStruct * queueInit();
 void enqueue( int newVal, queueStruct * queue );
 int dequeue( queueStruct * queue );
-listNode * createQueueNode( int newVal );
-void freeQueueNode(listNode * node);
+queueNode * createQueueNode( int newVal );
+void freeQueueNode(queueNode * node);
 
 
 queueStruct * queueInit() {
@@ -34,10 +34,10 @@ queueStruct * queueInit() {
 
 void enqueue( int newVal, queueStruct * queue ) {
 	
-    listNode * newNode = createQueueNode(newVal);
+    queueNode * newNode = createQueueNode(newVal);
 
     if( queue->head == NULL ) {
-        queue->head = (listNode *) malloc(sizeof(listNode));
+        queue->head = (queueNode *) malloc(sizeof(queueNode));
         if (queue->head == NULL) {
             printf("out of memory error\n");
             return;
@@ -46,7 +46,7 @@ void enqueue( int newVal, queueStruct * queue ) {
     }
 
     if (queue->tail == NULL) {
-        queue->tail = (listNode *) malloc(sizeof(listNode));
+        queue->tail = (queueNode *) malloc(sizeof(queueNode));
         if (queue->tail == NULL) {
             printf("out of memory error\n");
             return;
@@ -59,20 +59,21 @@ void enqueue( int newVal, queueStruct * queue ) {
 
 int dequeue( queueStruct * queue ) {
 
-    int valTmp = queue->head->val;                 // tmp var
-    listNode * nextNode = queue->head->nextNode;   // tmp var
-    freeQueueNode(queue->head);                    // free memory of current head
-    queue->head = nextNode;                        // move head toward
-
-    if (queue->head == NULL) {
+    if( queue->head ) {
+        int valTmp = queue->head->val;                 // tmp var
+        queueNode * nextNode = queue->head->nextNode;   // tmp var
+        freeQueueNode(queue->head);                    // free memory of current head
+        queue->head = nextNode;                        // move head toward
+        return valTmp;
+    }
+    else {
         printf("Queue is empty, bye bye\n");
         return -1;
     }
-    return valTmp;
 }
 
-listNode * createQueueNode( int newVal ) {
-    listNode * newNode = (listNode *) malloc (sizeof(listNode));
+queueNode * createQueueNode( int newVal ) {
+    queueNode * newNode = (queueNode *) malloc (sizeof(queueNode));
 
 	if (newNode == NULL) {
 		printf("out of memory error\n");
@@ -84,12 +85,12 @@ listNode * createQueueNode( int newVal ) {
 }
 
 
-void freeQueueNode(listNode * node) {
+void freeQueueNode(queueNode * node) {
 	free(node);
 	node = NULL;
 }
 
-int main() {
+// int main() {
 
 /* 
     //Example of use: 
@@ -127,6 +128,6 @@ int main() {
     Queue is empty, bye bye
 */
 
-    return 0;
-}
+    // return 0;
+// }
 

@@ -3,20 +3,20 @@
 #include <string.h>
 
 typedef struct {
-    int val;         
+    void * val;         
     void * prevNode; 
-} listNode;
+} stackNode;
 
 typedef struct {
-    listNode * top;
+    stackNode * top;
 } stackStruct;
 
 
 stackStruct * stackInit();
-void put( int newVal, stackStruct * stack );
-int pop(stackStruct * stack);
-listNode * createStackNode( int newVal, stackStruct * stack );
-void freeNode(listNode * node);
+void push( void* newVal, stackStruct * stack );
+void* pop(stackStruct * stack);
+stackNode * createStackNode( void* newVal, stackStruct * stack );
+void freeNode(stackNode * node);
 
 
 stackStruct * stackInit() {
@@ -28,42 +28,46 @@ stackStruct * stackInit() {
         printf("out of memory error\n");
         return NULL;
     }
-
     return stack;
 }
 
-void push( int newVal, stackStruct * stack ) {
+
+
+void push( void* newVal, stackStruct * stack ) {
 	
-    listNode * newNode = createStackNode(newVal, stack);
+    stackNode * newNode = createStackNode(newVal, stack);
     if (stack->top == NULL) {
-        stack->top = (listNode *) malloc(sizeof(listNode));
+        stack->top = (stackNode *) malloc(sizeof(stackNode));
+    
         if (stack->top == NULL) {
             printf("out of memory error\n");
             return;
         }
     }
+
     stack->top = newNode;
 }
 
+void * pop(stackStruct * stack) {
 
-int pop(stackStruct * stack) {
+    if(stack->top) {
+        void * valTmp = stack->top->val;                    // tmp var
+        stackNode * prevNode = stack->top->prevNode;        // tmp var
 
-    int valTmp = stack->top->val;                 // tmp var
-    listNode * prevNode = stack->top->prevNode;   // tmp var
+        freeNode(stack->top);                         // free memory of current top
+        stack->top = prevNode;                        // move top backward
 
-    freeNode(stack->top);                         // free memory of current top
-    stack->top = prevNode;                        // move top backward
-
-    if (stack->top == NULL) {
-        printf("Stack is empty, bye bye\n");
-		return -1;
+        return valTmp;
     }
-
-    return valTmp;
+    else {
+        printf("Stack is empty, bye bye\n");
+		return NULL;
+    }
+    
 }
 
-listNode * createStackNode( int newVal, stackStruct * stack ) {
-    listNode * newNode = (listNode *) malloc (sizeof(listNode));
+stackNode * createStackNode( void* newVal, stackStruct * stack ) {
+    stackNode * newNode = (stackNode *) malloc (sizeof(stackNode));
 
 	if (newNode == NULL) {
 		printf("out of memory error\n");
@@ -77,13 +81,13 @@ listNode * createStackNode( int newVal, stackStruct * stack ) {
 }
 
 
-void freeNode(listNode * node) {
+void freeNode(stackNode * node) {
 	free(node);
 	node = NULL;
 }
 
 
-int main() {
+// int main() {
 
 /*
     //Example of use:
@@ -120,6 +124,6 @@ int main() {
     Stack is empty, bye bye
 */
 
-    return 0;
-}
+//     return 0;
+// }
 
