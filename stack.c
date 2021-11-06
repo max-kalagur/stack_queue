@@ -60,7 +60,7 @@ void * pop(stackStruct * stack) {
         return valTmp;
     }
     else {
-        printf("Stack is empty, bye bye\n");
+        // printf("Stack is empty, bye bye\n");
 		return NULL;
     }
     

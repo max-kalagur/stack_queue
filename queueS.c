@@ -67,7 +67,7 @@ void * dequeueS( queueSStruct * queue ) {
         return valTmp;
     }
     else {
-        printf("Queue is empty, bye bye\n");
+        // printf("Queue is empty, bye bye\n");
         return NULL;
     }
 }
