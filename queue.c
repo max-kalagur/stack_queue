@@ -62,8 +62,8 @@ int dequeue( queueStruct * queue ) {
     if( queue->head ) {
         int valTmp = queue->head->val;                 // tmp var
         queueNode * nextNode = queue->head->nextNode;   // tmp var
-        
-        printf("%d\n", queue->head->val);
+
+        printf("%d\n", &queue->head->val);
 
         freeQueueNode(queue->head);                    // free memory of current head
         queue->head = nextNode;                        // move head toward
