@@ -62,7 +62,13 @@ int main(int argc, char const *argv[]) {
 	printf("=========================\n");
 	return 0;
 
-/* Output: 
+/* Tree we have:
+                    42  
+        11                      64
+    7       15              55      99
+3                                       100
+
+Terminal Output: 
 
 ======= LEVELORDER ========
 42      11      64      7       15      55      99      3       100
