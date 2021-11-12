@@ -28,10 +28,15 @@ stackStruct * stackInit() {
         printf("out of memory error\n");
         return NULL;
     }
+
+    stack->top = NULL;
+
     return stack;
 }
 
-
+int isEmptyStack(stackStruct * stack) { 
+    return stack->top == NULL; 
+}
 
 void push( void* newVal, stackStruct * stack ) {
 	
@@ -54,8 +59,8 @@ void * pop(stackStruct * stack) {
         void * valTmp = stack->top->val;                    // tmp var
         stackNode * prevNode = stack->top->prevNode;        // tmp var
 
-        freeNode(stack->top);                         // free memory of current top
-        stack->top = prevNode;                        // move top backward
+        freeNode(stack->top);                               // free memory of current top
+        stack->top = prevNode;                              // move top backward
 
         return valTmp;
     }

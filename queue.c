@@ -28,7 +28,7 @@ queueStruct * queueInit() {
         printf("out of memory error\n");
         return NULL;
     }
-    queue->head = queue->tail = NULL;   // why when we init queue second time we have `head` in memory already?..
+    queue->head = queue->tail = NULL;
 
     return queue;
 }

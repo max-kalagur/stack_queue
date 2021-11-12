@@ -38,16 +38,16 @@ int main(int argc, char const *argv[]) {
 	root = addNode(root, 100);
 	printf("======= LEVELORDER ========\n");
 	levelorder(root); 	// 
-	printf("=========================\n");
+	printf("\n=========================\n");
 	printf("======= PREORDER ========\n");
 	preorder(root); 	// P->L->R
-	printf("=========================\n");
+	printf("\n=========================\n");
 	printf("======= INORDER =========\n");
 	inorder(root); 	// L->P->R
-	printf("=========================\n");
+	printf("\n=========================\n");
 	printf("======= POSTORDER =======\n");
 	postorder(root); 	// L->R->P
-	printf("=========================\n");
+	printf("\n=========================\n");
 	
 	freeTree(&root);
 	
@@ -121,50 +121,20 @@ void levelorder(tree* root) { // 42 11 64 7 15 55 99 3 100
 
     if (root != NULL) {
 		
-        queueSStruct * levelQueue = queueSInit();
-        queueStruct * queue = queueInit();
+        queueSStruct * queue = queueSInit();
+        tree* node;
 
-        int k;
-        tree* tmpNode = root;
-        enqueueS(tmpNode, levelQueue);
+        enqueueS(root, queue);
 
-        for( register int i = 0 ; ; i++ ) {
+        while ( node = dequeueS(queue) ) {
+        
+            if(node->left)  enqueueS(node->left, queue);
+            if(node->right) enqueueS(node->right, queue);
 
-            if(i > 10000) {
-                printf("Loop error\n");
-                break;
-            }
-
-            queueSStruct * nextLevelStack = queueSInit();
-            int hasAny = 0;
-
-            while( tmpNode = dequeueS(levelQueue) ) {
-
-                hasAny = 1;
-
-                enqueue(tmpNode->key, queue);
-
-                if( tmpNode->left ) {
-                    enqueueS(tmpNode->left, nextLevelStack);
-                }
-                if( tmpNode->right ) {
-                    enqueueS(tmpNode->right, nextLevelStack);
-                }
-            }
-
-            levelQueue = nextLevelStack;
-            
-            if( !hasAny ) {
-                // printf("Tree is ended.\n");
-                while( k = dequeue(queue) ) {
-                    if( k == -1 ) { break; }
-                    printf("%d\t", k);
-                }
-                printf("\n");
-                break;
-            }
+            printf("%d\t", node->key);
 
         }
+
 	}
 
 }
@@ -173,89 +143,17 @@ void preorder(tree* root) { // 42 11 7 3 15 64 55 99 100
 
     if (root != NULL) {
 		
-        stackStruct * stack;
-        stack = stackInit();
+        stackStruct * stack = stackInit();
+        tree* node;
 
-        queueStruct * queue;
-        queue = queueInit();
+        push(root, stack);
 
-        tree* currNode = root;
-        tree* prevNode;
-        int go_back = 0, left_back = 0, right_back = 0, stop_left = 0;
+        while ( node = pop(stack) ) {
 
-        for( int i = 0 ; ; i++ ) {
+            if(node->right) push(node->right, stack);
+            if(node->left)  push(node->left, stack);
 
-            if(i > 10000) {
-                printf("Loop error\n");
-                break;
-            }
-
-            if( go_back ) {
-
-                prevNode = currNode;
-
-                currNode = pop(stack);
-                // printf("Level Back: %d\n",currNode->key);
-
-                if( currNode == root && ((currNode->right && prevNode->key > currNode->key) || !currNode->right)  ) {
-                    // printf("Tree is ended\n");
-
-                    int k;
-                    while( k = dequeue(queue) ) {
-                        if( k == -1 ) break;
-                        printf("%d\t", k);
-                    }
-                    printf("\n");
-                    break;
-                }
-
-                if( ( left_back && currNode->right ) || ( right_back && (prevNode->left && prevNode->right) && currNode->right )) {
-                    push(currNode, stack);
-                    go_back = left_back = right_back = 0;
-                }
-                else {
-                    continue;
-                }
-            }
-
-            if(i == 0) {
-                push(currNode, stack);
-                enqueue(currNode->key, queue);
-
-                // printf("Root: %d\n", currNode->key);
-            }
-            else if(currNode->left && !stop_left) {
-
-                currNode = currNode->left;
-
-                enqueue(currNode->key, queue);
-
-                if( currNode->left || currNode->right ) {
-                    push(currNode, stack);
-                }
-                else {
-                    go_back = stop_left = left_back = 1;
-                }
-
-                // printf("Left: %d\n",currNode->key);
-            }
-            else if(currNode->right) {
-
-                currNode = currNode->right;
-
-                enqueue(currNode->key, queue);
-
-                if( currNode->left || currNode->right ) {
-                    push(currNode, stack);
-                    stop_left = 0;
-                }
-                else {
-                    go_back = right_back = 1;
-                }
-
-                // printf("Right: %d\n",currNode->key);
-            }
-
+            printf("%d\t", node->key);
         }
 	}
 
@@ -264,95 +162,29 @@ void preorder(tree* root) { // 42 11 7 3 15 64 55 99 100
 void inorder(tree* root) { // 3 7 11 15 42 55 64 99 100
 
     if (root != NULL) {
-		
-        stackStruct * stack;
-        stack = stackInit();
 
-        queueStruct * queue;
-        queue = queueInit();
+        stackStruct * stack = stackInit();
+        tree* node = root;
 
-        tree* currNode = root;
-        tree* prevNode;
-        int go_back = 0, left_back = 0, right_back = 0, stop_left = 0;
+        push(root, stack);
 
-        for( register int i = 0 ; ; i++ ) {
-
-            if(i > 10000) {
-                printf("Loop error\n");
-                break;
+        do {
+            if(node->left)  {
+                push(node->left, stack);
+                node = node->left;
             }
-
-            if( go_back ) {
-
-                prevNode = currNode;
-                currNode = pop(stack);
-
-                // printf("Level Back: %d\n",currNode->key);
-
-                if( currNode == root && ((currNode->right && prevNode->key > currNode->key) || !currNode->right)  ) {
-                    // printf("Tree is ended\n");
-
-                    int k;
-                    while( k = dequeue(queue) ) {
-                        if( k == -1 ) break;
-                        printf("%d\t", k);
+            else {
+                while ( node = pop(stack) ) {
+                    printf("%d\t", node->key);
+                    if(node->right) {
+                        push(node->right, stack);
+                        node = node->right;
+                        break;
                     }
-                    printf("\n");
-                    break;
-                }
-
-                if( !right_back || (right_back && (prevNode->left && prevNode->right)) ) {
-                    enqueue(currNode->key, queue);
-                }
-
-                if( ( left_back && currNode->right ) || ( right_back && (prevNode->left && prevNode->right) && currNode->right )) {
-                    push(currNode, stack);
-                    go_back = left_back = right_back = 0;
-                }
-                else {
-                    continue;
                 }
             }
 
-            if(i == 0) {
-                push(currNode, stack);
-
-                // printf("Root: %d\n", currNode->key);
-            }
-            else if(currNode->left && !stop_left) {
-
-                currNode = currNode->left;
-
-                if( currNode->left || currNode->right ) {
-                    push(currNode, stack);
-                }
-                else {
-                    go_back = stop_left = left_back = 1;
-                    enqueue(currNode->key, queue);
-                }
-
-                // printf("Left: %d\n",currNode->key);
-            }
-            else if(currNode->right) {
-
-                currNode = currNode->right;
-
-                if( !currNode->left ) {
-                    enqueue(currNode->key, queue);
-                }
-
-                if( currNode->left || currNode->right ) {
-                    push(currNode, stack);
-                    stop_left = 0;
-                }
-                else {
-                    go_back = right_back = 1;
-                }
-
-                // printf("Right: %d\n",currNode->key);
-            }
-
-        }
+        } while ( node );
 	}
 }
 
@@ -360,90 +192,32 @@ void postorder(tree* root) {    // 3 7 15 11 55 100 99 64 42
 
     if (root != NULL) {
 		
-        stackStruct * stack;
-        stack = stackInit();
+        stackStruct * stack = stackInit();
+        tree* node = root;
 
-        queueStruct * queue;
-        queue = queueInit();
-
-        tree* currNode = root;
-        tree* prevNode;
-        int go_back = 0, left_back = 0, right_back = 0, stop_left = 0;
-
-        for( register int i = 0 ; ; i++ ) {
-
-            if(i > 10000) {
-                printf("Loop error\n");
-                break;
+        do {
+            while(node) {
+                if(node->right) {
+                    push(node->right, stack);
+                }
+                push(node, stack);
+                node = node->left;
             }
 
-            if( go_back ) {
-
-                prevNode = currNode;
-                enqueue(currNode->key, queue);
-
-                currNode = pop(stack);
-
-                // printf("Level Back: %d\n",currNode->key);
-
-                if( currNode == root && ((currNode->right && prevNode->key > currNode->key) || !currNode->right)  ) {
-
-                    enqueue(currNode->key, queue);
-
-                    // printf("Tree is ended\n");
-
-                    int k;
-                    while( k = dequeue(queue) ) {
-                        if( k == -1 ) break;
-                        printf("%d\t", k);
-                    }
-                    printf("\n");
-                    break;
-                }
-
-                if( ( left_back && currNode->right ) || ( right_back && (prevNode->left && prevNode->right) && currNode->right )) {
-                    push(currNode, stack);
-                    go_back = left_back = right_back = 0;
-                }
-                else {
-                    continue;
-                }
+            node = pop(stack);
+            
+            if(node->right && stack->top && stack->top->val == node->right) {
+                pop(stack);
+                push(node, stack);
+                node = node->right;
+            }
+            else {
+                printf("%d\t", node->key);
+                node = NULL;
             }
 
-            if(i == 0) {
-                push(currNode, stack);
+        } while( !isEmptyStack(stack) );
 
-                // printf("Root: %d\n", currNode->key);
-            }
-            else if(currNode->left && !stop_left) {
-
-                currNode = currNode->left;
-
-                if( currNode->left || currNode->right ) {
-                    push(currNode, stack);
-                }
-                else {
-                    go_back = stop_left = left_back = 1;
-                }
-
-                // printf("Left: %d\n",currNode->key);
-            }
-            else if(currNode->right) {
-
-                currNode = currNode->right;
-
-                if( currNode->left || currNode->right ) {
-                    push(currNode, stack);
-                    stop_left = 0;
-                }
-                else {
-                    go_back = right_back = 1;
-                }
-
-                // printf("Right: %d\n",currNode->key);
-            }
-
-        }
 	}
 }
 

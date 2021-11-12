@@ -29,6 +29,8 @@ queueSStruct * queueSInit() {
         return NULL;
     }
 
+    queue->head = queue->tail = NULL; 
+
     return queue;
 }
 
