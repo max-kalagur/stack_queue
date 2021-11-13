@@ -164,27 +164,21 @@ void inorder(tree* root) { // 3 7 11 15 42 55 64 99 100
     if (root != NULL) {
 
         stackStruct * stack = stackInit();
-        tree* node = root;
+		tree* stackTop;
+        tree* currNode = root;
 
-        push(root, stack);
+        while ( currNode || !isEmptyStack(stack) ){
 
-        do {
-            if(node->left)  {
-                push(node->left, stack);
-                node = node->left;
-            }
-            else {
-                while ( node = pop(stack) ) {
-                    printf("%d\t", node->key);
-                    if(node->right) {
-                        push(node->right, stack);
-                        node = node->right;
-                        break;
-                    }
-                }
-            }
-
-        } while ( node );
+			if( currNode ) {
+				push(currNode, stack);
+				currNode = currNode->left;
+			}
+			else {
+				currNode = pop(stack);
+				printf("%d\t", currNode->key);
+				currNode = currNode->right;
+			}
+		}
 	}
 }
 
@@ -193,31 +187,29 @@ void postorder(tree* root) {    // 3 7 15 11 55 100 99 64 42
     if (root != NULL) {
 		
         stackStruct * stack = stackInit();
-        tree* node = root;
+        tree* currNode = root;
+        tree* prevNode;
 
-        do {
-            while(node) {
-                if(node->right) {
-                    push(node->right, stack);
-                }
-                push(node, stack);
-                node = node->left;
-            }
+		while ( currNode || !isEmptyStack(stack) ){
 
-            node = pop(stack);
-            
-            if(node->right && stack->top && stack->top->val == node->right) {
-                pop(stack);
-                push(node, stack);
-                node = node->right;
-            }
-            else {
-                printf("%d\t", node->key);
-                node = NULL;
-            }
+			if( currNode ) {
+				push(currNode, stack);
+				currNode = currNode->left;
+			}
+			else {
 
-        } while( !isEmptyStack(stack) );
+				currNode = stack->top->val;
 
+				if( !currNode->right || currNode->right == prevNode ) {
+					printf("%d\t", currNode->key);
+					prevNode = pop(stack);
+					currNode = NULL;
+				}
+				else {
+					currNode = currNode->right;
+				}
+			}
+		}
 	}
 }
 
